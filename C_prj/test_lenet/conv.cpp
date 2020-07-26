@@ -69,7 +69,7 @@ void conv_1_pool2(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 
 				OUT2[cho][r][c] *= W2_P[cho] ;
 				OUT2[cho][r][c] += Bias2_P[cho];
-				OUT2[cho][r][c] = tanf(OUT2[cho][r][c]);
+				OUT2[cho][r][c] = tanhf(OUT2[cho][r][c]);
 			}
 		}
 	}
@@ -143,7 +143,7 @@ void conv_3_pool4(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 
 				OUT4[cho][r][c] *= W4_P[cho];
 				OUT4[cho][r][c] += Bias4_P[cho];
-				OUT4[cho][r][c] = tanf(OUT4[cho][r][c]);
+				OUT4[cho][r][c] = tanhf(OUT4[cho][r][c]);
 			}
 		}
 	}
@@ -179,11 +179,71 @@ void conv_5(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM )
 
 	for (int cho = 0; cho < 120; cho++)
 	{
+		OUT5[cho]  += Bias5[cho];
+		OUT5[cho]  = _tanh(OUT5[cho] );
+	}
+	memcpy((void*)(Out_DRAM), (const void*)OUT5, sizeof(float) * 120);
+}
+
+/////////////////////////////////////////////////////////////////////FC6²ã
+static float IN6[120] = { 0 };
+static float W6[84][120] = { 0 };
+static float Bias6[84] = { 0 };
+static float OUT6[84] = { 0 };
+
+void fc_6(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
+{
+	memcpy((void*)Bias6, (const void*)(Bias_DRAM), sizeof(float) * 84);
+	memcpy((void*)IN6, (const void*)(In_DRAM), sizeof(float) * 120);
+	memcpy((void*)W6, (const void*)(W_DRAM), sizeof(float) * 120 *84);
+
+	memset(OUT6, 0, sizeof(OUT6));
+
+
+	for (int chi = 0; chi < 120; chi++)
+	{
+		for (int cho = 0; cho < 84; cho++)
 		{
-			OUT5[cho]  += Bias5[cho];
-			OUT5[cho]  = _tanh(OUT5[cho] );
+			OUT6[cho] += IN6[chi]  * W6[cho][chi] ;
 		}
 	}
-	
-	memcpy((void*)(Out_DRAM), (const void*)OUT5, sizeof(float) * 120);
+
+	for (int cho = 0; cho < 84; cho++)
+	{
+		OUT6[cho] += Bias6[cho];
+		OUT6[cho] = tanhf(OUT6[cho]);
+	}
+
+	memcpy((void*)(Out_DRAM), (const void*)OUT6, sizeof(float) * 84);
+}
+/////////////////////////////////////////////////////////////////////FC7²ã
+static float IN7[84] = { 0 };
+static float W7[10][84] = { 0 };
+static float Bias7[10] = { 0 };
+static float OUT7[10] = { 0 };
+
+void fc_6(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
+{
+	memcpy((void*)Bias7, (const void*)(Bias_DRAM), sizeof(float) * 10);
+	memcpy((void*)IN7, (const void*)(In_DRAM), sizeof(float) * 84);
+	memcpy((void*)W7, (const void*)(W_DRAM), sizeof(float) * 10 * 84);
+
+	memset(OUT7, 0, sizeof(OUT7));
+
+
+	for (int chi = 0; chi < 84; chi++)
+	{
+		for (int cho = 0; cho < 10; cho++)
+		{
+			OUT7[cho] += IN7[chi] * W7[cho][chi];
+		}
+	}
+
+	for (int cho = 0; cho < 10; cho++)
+	{
+		OUT7[cho] += Bias7[cho];
+		OUT7[cho] = tanhf(OUT7[cho]);
+	}
+
+	memcpy((void*)(Out_DRAM), (const void*)OUT7, sizeof(float) * 10);
 }
