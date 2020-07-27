@@ -1,10 +1,15 @@
 #include "conv.h"
 #include "math.h"
-float _tanh(float x) {
-
-	float exp2x = expf(2 * x) + 1;
-	return (exp2x - 2) / (exp2x);
-}
+//float _tanh(float x) {
+//	//1/(1+e^-x)
+//
+//	float exp_x = expf(-x);
+//	float res = 1 / (1 + exp_x);
+//	return res;
+//
+////	float exp2x = expf(2 * x) + 1;
+////	return (exp2x - 2) / (exp2x);
+//}
 
 /////////////////////////////////////////////////////////////////////第一层卷积和第二层池化
 static float IN1[32][32] = { 0 };
@@ -46,8 +51,7 @@ void conv_1_pool2(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 		{
 			for (int cho = 0; cho < 6; cho++)
 			{ 
-				OUT1[cho][r][c] = _tanh(OUT1[cho][r][c]+ Bias1[cho]);
-
+				OUT1[cho][r][c] = (OUT1[cho][r][c]+ Bias1[cho])>0?(OUT1[cho][r][c] + Bias1[cho]):0;
 			}
 		}
 	}
@@ -64,11 +68,11 @@ void conv_1_pool2(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 				OUT2[cho][r][c] = (OUT1[cho][r*2 + 0][c*2 + 0]
 							+ OUT1[cho][r *2 + 0][c *2 + 1]
 							+ OUT1[cho][r *2 + 1][c *2+ 0]
-							+ OUT1[cho][r *2 + 1][c *2 + 1] );
+							+ OUT1[cho][r *2 + 1][c *2 + 1] )/4;
 
-				float w = W2_P[cho] *0.25;
+				/*float w = W2_P[cho] *0.25;
 				OUT2[cho][r][c] *= w; 
-				OUT2[cho][r][c] = tanhf(OUT2[cho][r][c]+ Bias2_P[cho]);
+				OUT2[cho][r][c] = _tanh(OUT2[cho][r][c]+ Bias2_P[cho]);*/
 			}
 		}
 	}
@@ -106,7 +110,9 @@ void conv_3_pool4(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 					{
 						for (int cho = 0; cho < 16; cho++)
 						{
-							OUT3[cho][r][c] += IN3[chi][r + kr][c + kc] * W3[cho][chi][kr][kc];
+							if (table[chi][cho]==1)
+								OUT3[cho][r][c] += IN3[chi][r + kr][c + kc] * W3[cho][chi][kr][kc];
+							else OUT3[cho][r][c] = 0;
 						}
 					}
 
@@ -120,7 +126,7 @@ void conv_3_pool4(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 		{
 			for (int cho = 0; cho < 16; cho++)
 			{
-				OUT3[cho][r][c] = _tanh(OUT3[cho][r][c] + Bias3[cho]);
+				OUT3[cho][r][c] = (OUT3[cho][r][c] + Bias3[cho])>0? (OUT3[cho][r][c] + Bias3[cho]):0;
 			}
 		}
 	}
@@ -137,11 +143,11 @@ void conv_3_pool4(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 				OUT4[cho][r][c] = (OUT3[cho][r *2 + 0][c *2 + 0]
 					+ OUT3[cho][r *2 + 0][c *2 + 1]
 					+ OUT3[cho][r *2 + 1][c *2 + 0]
-					+ OUT3[cho][r *2 + 1][c *2 + 1]) ;
+					+ OUT3[cho][r *2 + 1][c *2 + 1]) /4;
 
-				float w = W4_P[cho] * 0.25;
+				/*float w = W4_P[cho] * 0.25;
 				OUT4[cho][r][c] *= w; 
-				OUT4[cho][r][c] = tanhf(OUT4[cho][r][c] + Bias4_P[cho]);
+				OUT4[cho][r][c] = _tanh(OUT4[cho][r][c] + Bias4_P[cho]);*/
 			}
 		}
 	}
@@ -177,7 +183,7 @@ void conv_5(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM )
 
 	for (int cho = 0; cho < 120; cho++)
 	{
-		OUT5[cho]  = _tanh(OUT5[cho] +Bias5[cho]);
+		OUT5[cho]  = (OUT5[cho] +Bias5[cho])>0? (OUT5[cho] + Bias5[cho]):0;
 	}
 	memcpy((void*)(Out_DRAM), (const void*)OUT5, sizeof(float) * 120);
 }
@@ -207,7 +213,7 @@ void fc_6(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
 
 	for (int cho = 0; cho < 84; cho++)
 	{
-		OUT6[cho] = tanhf(OUT6[cho] + Bias6[cho]) ;
+		OUT6[cho] = (OUT6[cho] + Bias6[cho])>0? (OUT6[cho] + Bias6[cho]):0;
 	}
 
 	memcpy((void*)(Out_DRAM), (const void*)OUT6, sizeof(float) * 84);
@@ -233,11 +239,6 @@ void fc_7(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
 		{
 			OUT7[cho] += IN7[chi] * W7[chi][cho];
 		}
-	}
-
-	for (int cho = 0; cho < 10; cho++)
-	{
-		OUT7[cho] = tanhf(OUT7[cho] + Bias7[cho]);
 	}
 
 	memcpy((void*)(Out_DRAM), (const void*)OUT7, sizeof(float) * 10);
