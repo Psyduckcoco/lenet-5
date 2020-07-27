@@ -37,11 +37,54 @@ float b_pool4[16] = { 0 };
 float b_fc6[84] = { 0 };
 float b_fc7[10] = { 0 };
 
+void read_parameters();
 
 int main()
 {
+	read_parameters();
 
 
 	return 0;
 
 }
+
+
+void read_mdl(const char* filename, float* para_array)
+{
+
+	FILE* fp;
+	fp = fopen(filename, "r+");
+	int i = 0;
+	int b;
+	while (!feof(fp))
+	{
+		b = fscanf(fp, "%f\r\n", para_array + i);
+		i++;
+	}
+	fclose(fp);
+}
+void read_parameters()
+{
+	///////////∂¡»°weight
+	read_mdl("E:\\lenet\\filter\\Wconv1.mdl", &W_CONV1[0][0][0][0]);
+	read_mdl("E:\\lenet\\filter\\Wconv3_modify.mdl", &W_CONV3[0][0][0][0]);
+	read_mdl("E:\\lenet\\filter\\Wconv5.mdl", &W_CONV5[0][0][0][0]);
+
+	read_mdl("E:\\lenet\\filter\\Wfc1.mdl", &WFC6[0]);
+	read_mdl("E:\\lenet\\filter\\Wfc2.mdl", &WFC7[0]);
+
+	read_mdl("E:\\lenet\\filter\\Wpool1.mdl", &W_POOL2[0]);
+	read_mdl("E:\\lenet\\filter\\Wpool2.mdl", &W_POOL4[0]);
+
+	//∂¡»°bias
+	read_mdl("E:\\lenet\\filter\\bconv1.mdl", &b_conv1[0]);
+	read_mdl("E:\\lenet\\filter\\bconv3.mdl", &b_conv3[0]);
+	read_mdl("E:\\lenet\\filter\\bconv5.mdl", &b_conv5[0]);
+
+	read_mdl("E:\\lenet\\filter\\bfc1.mdl", &b_fc6[0]);
+	read_mdl("E:\\lenet\\filter\\bfc2.mdl", &b_fc7[0]);
+
+	read_mdl("E:\\lenet\\filter\\bpool1.mdl", &b_pool2[0]);
+	read_mdl("E:\\lenet\\filter\\bpool2.mdl", &b_pool4[0]);
+}
+
