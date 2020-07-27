@@ -66,25 +66,25 @@ void read_mdl(const char* filename, float* para_array)
 void read_parameters()
 {
 	///////////∂¡»°weight
-	read_mdl("E:\\lenet\\filter\\Wconv1.mdl", &W_CONV1[0][0][0][0]);
-	read_mdl("E:\\lenet\\filter\\Wconv3_modify.mdl", &W_CONV3[0][0][0][0]);
-	read_mdl("E:\\lenet\\filter\\Wconv5.mdl", &W_CONV5[0][0][0][0]);
+	read_mdl("..\\..\\filter\\Wconv1.mdl", &W_CONV1[0][0][0][0]);
+	read_mdl("..\\..\\filter\\Wconv3_modify.mdl", &W_CONV3[0][0][0][0]);
+	read_mdl("..\\..\\filter\\Wconv5.mdl", &W_CONV5[0][0][0][0]);
 
-	read_mdl("E:\\lenet\\filter\\Wfc1.mdl", &WFC6[0]);
-	read_mdl("E:\\lenet\\filter\\Wfc2.mdl", &WFC7[0]);
+	read_mdl("..\\..\\filter\\Wfc1.mdl", &WFC6[0]);
+	read_mdl("..\\..\\filter\\Wfc2.mdl", &WFC7[0]);
 
-	read_mdl("E:\\lenet\\filter\\Wpool1.mdl", &W_POOL2[0]);
-	read_mdl("E:\\lenet\\filter\\Wpool2.mdl", &W_POOL4[0]);
+	read_mdl("..\\..\\filter\\Wpool1.mdl", &W_POOL2[0]);
+	read_mdl("..\\..\\filter\\Wpool2.mdl", &W_POOL4[0]);
 
 	//∂¡»°bias
-	read_mdl("E:\\lenet\\filter\\bconv1.mdl", &b_conv1[0]);
-	read_mdl("E:\\lenet\\filter\\bconv3.mdl", &b_conv3[0]);
-	read_mdl("E:\\lenet\\filter\\bconv5.mdl", &b_conv5[0]);
+	read_mdl("..\\..\\filter\\bconv1.mdl", &b_conv1[0]);
+	read_mdl("..\\..\\filter\\bconv3.mdl", &b_conv3[0]);
+	read_mdl("..\\..\\filter\\bconv5.mdl", &b_conv5[0]);
 
-	read_mdl("E:\\lenet\\filter\\bfc1.mdl", &b_fc6[0]);
-	read_mdl("E:\\lenet\\filter\\bfc2.mdl", &b_fc7[0]);
+	read_mdl("..\\..\\filter\\bfc1.mdl", &b_fc6[0]);
+	read_mdl("..\\..\\filter\\bfc2.mdl", &b_fc7[0]);
 
-	read_mdl("E:\\lenet\\filter\\bpool1.mdl", &b_pool2[0]);
-	read_mdl("E:\\lenet\\filter\\bpool2.mdl", &b_pool4[0]);
+	read_mdl("..\\..\\filter\\bpool1.mdl", &b_pool2[0]);
+	read_mdl("..\\..\\filter\\bpool2.mdl", &b_pool4[0]);
 }
 
