@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision
-import numpy as np
+
 
 # In[8]:
 
@@ -79,8 +79,8 @@ test_data = torchvision.datasets.MNIST(root="./data/",
                                         transform=transform,
                                         download=True )
  
-train_loader = torch.utils.data.DataLoader(dataset = train_data,batch_size = 64,shuffle = True) #数据加载器:组合数据集和采样器
-test_loader = torch.utils.data.DataLoader(dataset = test_data,batch_size = 64,shuffle = False)
+train_loader = torch.utils.data.DataLoader(dataset = train_data,batch_size = 1,shuffle = True) #数据加载器:组合数据集和采样器
+test_loader = torch.utils.data.DataLoader(dataset = test_data,batch_size = 1,shuffle = False)
  
 #define loss
 net = LeNet().to(device)    #实例化网络，有GPU则将网络放入GPU加速
@@ -98,6 +98,7 @@ for epoch in range(EPOCH):
     for i,data in enumerate(train_loader):
         inputs,labels = data
         inputs, labels = inputs.to(device), labels.to(device)   #有GPU则将数据置入GPU加速
+
 
         # 梯度清零
         optimizer.zero_grad()

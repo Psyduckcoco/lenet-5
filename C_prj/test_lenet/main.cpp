@@ -47,32 +47,29 @@ float pic_in[32][32] = {0};
 int main()
 {
 	read_parameters();
-	Mat img32 = imread("..\\..\\dataset\\test1.bmp", 0);//读取原图
+	Mat img_ori = imread("..\\..\\dataset\\test6.bmp", 0);//读取原图
+	Mat img_28;
+	Mat img_in;
+	resize(img_ori, img_28, Size(28, 28));
+	copyMakeBorder(img_28, img_in, 2, 2, 2, 2, BORDER_CONSTANT, 0);
+
+
 
 	for (int row = 0; row < 32; row++)      //行
 		for (int col = 0; col < 32; col++)  //列
 			{
-				pic_in[row][col] = (float)(img32.at<uchar>(row, col))  /  255.0*2  -1; //归一化到-1 ~ 1 
+				pic_in[row][col] = (float)(img_in.at<uchar>(row, col)) / 255.0 ; //归一化到0 ~ 1 
 			}
 
-	//for (int row = 0; row < 32; row++)      //行
-	//{
-	//	for (int col = 0; col < 32; col++)  //列
-	//	{
-	//		cout << setprecision(1) << pic_in[row][col]<<' ';
-	//	}
-	//	cout << endl;
-	//}
 
-
-	conv_1_pool2(&pic_in[0][0],&W_CONV1[0][0][0][0],&S2_DRAM[0][0][0], b_conv1, W_POOL2, b_pool2);
-	conv_3_pool4(&S2_DRAM[0][0][0], &W_CONV3[0][0][0][0], &S4_DRAM[0][0][0], b_conv3, W_POOL4, b_pool4);
+	conv_1_pool2(&pic_in[0][0],&W_CONV1[0][0][0][0],&S2_DRAM[0][0][0], b_conv1 );
+	conv_3_pool4(&S2_DRAM[0][0][0], &W_CONV3[0][0][0][0], &S4_DRAM[0][0][0], b_conv3 );
 	conv_5(&S4_DRAM[0][0][0], &W_CONV5[0][0][0][0], &C5_DRAM[0], b_conv5);
 	fc_6(C5_DRAM, WFC6, F6_DRAM, b_fc6);
 	fc_7(F6_DRAM, WFC7, F7_DRAM, b_fc7);
 
 	int max_arg = 0;
-	float max = 0;
+	float max = -100000;
 	for (int i = 0; i < 10; i++) 
 	{
 		if (F7_DRAM[i] > max)
@@ -81,7 +78,8 @@ int main()
 			max = F7_DRAM[i];
 		}
 	}
-	imshow("img32", img32);
+	imshow("原始图", img_ori);
+	imshow("padding图", img_in);
 	waitKey(1000);
 	while (1);
 	return 0;
@@ -106,25 +104,21 @@ void read_mdl(const char* filename, float* para_array)
 void read_parameters()
 {
 	///////////读取weight
-	read_mdl("..\\..\\filter\\Wconv1.mdl", &W_CONV1[0][0][0][0]);
-	read_mdl("..\\..\\filter\\Wconv3_modify.mdl", &W_CONV3[0][0][0][0]);
-	read_mdl("..\\..\\filter\\Wconv5.mdl", &W_CONV5[0][0][0][0]);
+	read_mdl("..\\..\\python code\\parameter\\conv1.0.weight.txt", &W_CONV1[0][0][0][0]);
+	read_mdl("..\\..\\python code\\parameter\\conv2.0.weight.txt", &W_CONV3[0][0][0][0]);
+	read_mdl("..\\..\\python code\\parameter\\conv3.0.weight.txt", &W_CONV5[0][0][0][0]);
 
-	read_mdl("..\\..\\filter\\Wfc1.mdl", &WFC6[0]);
-	read_mdl("..\\..\\filter\\Wfc2.mdl", &WFC7[0]);
-
-	read_mdl("..\\..\\filter\\Wpool1.mdl", &W_POOL2[0]);
-	read_mdl("..\\..\\filter\\Wpool2.mdl", &W_POOL4[0]);
+	read_mdl("..\\..\\python code\\parameter\\fc2.0.weight.txt", &WFC6[0]);
+	read_mdl("..\\..\\python code\\parameter\\fc3.weight.txt", &WFC7[0]);
 
 	//读取bias
-	read_mdl("..\\..\\filter\\bconv1.mdl", &b_conv1[0]);
-	read_mdl("..\\..\\filter\\bconv3.mdl", &b_conv3[0]);
-	read_mdl("..\\..\\filter\\bconv5.mdl", &b_conv5[0]);
+	read_mdl("..\\..\\python code\\parameter\\conv1.0.bias.txt", &b_conv1[0]);
+	read_mdl("..\\..\\python code\\parameter\\conv2.0.bias.txt", &b_conv3[0]);
+	read_mdl("..\\..\\python code\\parameter\\conv3.0.bias.txt", &b_conv5[0]);
 
-	read_mdl("..\\..\\filter\\bfc1.mdl", &b_fc6[0]);
-	read_mdl("..\\..\\filter\\bfc2.mdl", &b_fc7[0]);
+	read_mdl("..\\..\\python code\\parameter\\fc2.0.bias.txt", &b_fc6[0]);
+	read_mdl("..\\..\\python code\\parameter\\fc3.bias.txt", &b_fc7[0]);
 
-	read_mdl("..\\..\\filter\\bpool1.mdl", &b_pool2[0]);
-	read_mdl("..\\..\\filter\\bpool2.mdl", &b_pool4[0]);
+
 }
 

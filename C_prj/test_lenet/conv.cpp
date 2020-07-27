@@ -17,11 +17,9 @@ static float W1[6][1][5][5] = { 0 };
 static float Bias1[6] = { 0 };
 static float OUT1[6][28][28] = { 0 };
 
-static float W2_P[24] = { 0 };
-static float Bias2_P[6] = { 0 };
 static float OUT2[6][14][14] = { 0 };
 
-void conv_1_pool2(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM,float* W2_P_DRAM, float* Bias2_P_DRAM)
+void conv_1_pool2(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
 {
 	memcpy((void*)Bias1, (const void*)(Bias_DRAM), sizeof(float) * 6);
 	memcpy((void*)IN1, (const void*)(In_DRAM), sizeof(float) * 32*32);
@@ -56,9 +54,6 @@ void conv_1_pool2(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 		}
 	}
 	/////////////////////////³Ø»¯
-	memcpy((void*)Bias2_P, (const void*)(Bias2_P_DRAM), sizeof(float) * 6);
-	memcpy((void*)W2_P, (const void*)(W2_P_DRAM), sizeof(float) * 24);
-
 	for (int r = 0; r < 14; r++)
 	{
 		for (int c = 0; c < 14; c++)
@@ -70,9 +65,6 @@ void conv_1_pool2(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 							+ OUT1[cho][r *2 + 1][c *2+ 0]
 							+ OUT1[cho][r *2 + 1][c *2 + 1] )/4;
 
-				/*float w = W2_P[cho] *0.25;
-				OUT2[cho][r][c] *= w; 
-				OUT2[cho][r][c] = _tanh(OUT2[cho][r][c]+ Bias2_P[cho]);*/
 			}
 		}
 	}
@@ -86,11 +78,9 @@ static float W3[16][6][5][5] = { 0 };
 static float Bias3[16] = { 0 };
 static float OUT3[16][10][10] = { 0 };
 
-static float W4_P[16*4] = { 0 };
-static float Bias4_P[16] = { 0 };
 static float OUT4[16][5][5] = { 0 };
 
-void conv_3_pool4(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, float* W2_P_DRAM, float* Bias2_P_DRAM)
+void conv_3_pool4(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
 {
 	memcpy((void*)Bias3, (const void*)(Bias_DRAM), sizeof(float) * 16);
 	memcpy((void*)IN3, (const void*)(In_DRAM), sizeof(float) * 6*14 * 14);
@@ -110,9 +100,7 @@ void conv_3_pool4(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 					{
 						for (int cho = 0; cho < 16; cho++)
 						{
-							if (table[chi][cho]==1)
-								OUT3[cho][r][c] += IN3[chi][r + kr][c + kc] * W3[cho][chi][kr][kc];
-							else OUT3[cho][r][c] = 0;
+							OUT3[cho][r][c] += IN3[chi][r + kr][c + kc] * W3[cho][chi][kr][kc];
 						}
 					}
 
@@ -131,8 +119,6 @@ void conv_3_pool4(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 		}
 	}
 	/////////////////////////³Ø»¯
-	memcpy((void*)Bias4_P, (const void*)(Bias2_P_DRAM), sizeof(float) * 16);
-	memcpy((void*)W4_P, (const void*)(W2_P_DRAM), sizeof(float) * 16*4);
 
 	for (int r = 0; r < 5; r++)
 	{
@@ -144,10 +130,6 @@ void conv_3_pool4(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DR
 					+ OUT3[cho][r *2 + 0][c *2 + 1]
 					+ OUT3[cho][r *2 + 1][c *2 + 0]
 					+ OUT3[cho][r *2 + 1][c *2 + 1]) /4;
-
-				/*float w = W4_P[cho] * 0.25;
-				OUT4[cho][r][c] *= w; 
-				OUT4[cho][r][c] = _tanh(OUT4[cho][r][c] + Bias4_P[cho]);*/
 			}
 		}
 	}
@@ -190,7 +172,7 @@ void conv_5(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM )
 
 /////////////////////////////////////////////////////////////////////FC6²ã
 static float IN6[120] = { 0 };
-static float W6[120][84] = { 0 };
+static float W6[84][120] = { 0 };
 static float Bias6[84] = { 0 };
 static float OUT6[84] = { 0 };
 
@@ -202,12 +184,11 @@ void fc_6(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
 
 	memset(OUT6, 0, sizeof(OUT6));
 
-
-	for (int chi = 0; chi < 120; chi++)
+	for (int cho = 0; cho < 84; cho++)
 	{
-		for (int cho = 0; cho < 84; cho++)
+		for (int chi = 0; chi < 120; chi++)
 		{
-			OUT6[cho] += IN6[chi]  * W6[chi][cho] ;
+			OUT6[cho] += IN6[chi]  * W6[cho][chi] ;
 		}
 	}
 
@@ -220,7 +201,7 @@ void fc_6(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
 }
 /////////////////////////////////////////////////////////////////////FC7²ã
 static float IN7[84] = { 0 };
-static float W7[84][10] = { 0 };
+static float W7[10][84] = { 0 };
 static float Bias7[10] = { 0 };
 static float OUT7[10] = { 0 };
 
@@ -237,7 +218,7 @@ void fc_7(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
 	{
 		for (int cho = 0; cho < 10; cho++)
 		{
-			OUT7[cho] += IN7[chi] * W7[chi][cho];
+			OUT7[cho] += IN7[chi] * W7[cho][chi];
 		}
 	}
 
