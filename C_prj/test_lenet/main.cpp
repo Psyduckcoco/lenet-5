@@ -47,7 +47,7 @@ float pic_in[32][32] = {0};
 int main()
 {
 	read_parameters();
-	Mat img32 = imread("..\\..\\dataset\\test3.bmp", 0);//读取原图
+	Mat img32 = imread("..\\..\\dataset\\test2.bmp", 0);//读取原图
 
 	for (int row = 0; row < 32; row++)      //行
 		for (int col = 0; col < 32; col++)  //列
