@@ -79,8 +79,8 @@ test_data = torchvision.datasets.MNIST(root="./data/",
                                         transform=transform,
                                         download=True )
  
-train_loader = torch.utils.data.DataLoader(dataset = train_data,batch_size = 1,shuffle = True) #数据加载器:组合数据集和采样器
-test_loader = torch.utils.data.DataLoader(dataset = test_data,batch_size = 1,shuffle = False)
+train_loader = torch.utils.data.DataLoader(dataset = train_data,batch_size = 64,shuffle = True) #数据加载器:组合数据集和采样器
+test_loader = torch.utils.data.DataLoader(dataset = test_data,batch_size = 64,shuffle = False)
  
 #define loss
 net = LeNet().to(device)    #实例化网络，有GPU则将网络放入GPU加速
@@ -88,7 +88,7 @@ loss_fuc = nn.CrossEntropyLoss()    #多分类问题，选择交叉熵损失函�
 # optimizer = optim.SGD(net.parameters(),lr = 0.001,momentum = 0.9)   #选择SGd，学习率取0.001
 optimizer = optim.Adam(net.parameters(),lr = 0.001)
 #Star train
-EPOCH = 50   #训练总轮数
+EPOCH = 20   #训练总轮数
 
 
 # net.load_state_dict(torch.load('Lenet.pth'))
