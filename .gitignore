@@ -1,12 +1,26 @@
 /*
-!/C_prj
-!/python code
-!/dataset
-!/filter
-!/imgs
 
+!/C_prj
 /C_prj/*
 !/C_prj/test_lenet
 /C_prj/test_lenet/.vs
 /C_prj/test_lenet/x64
+
+
+
+!/python code
+/python code/.idea
+/python code/data
+/python code/processed
+/python code/raw
+
+
+!/dataset
+/dataset/test
+/dataset/images
+/dataset/labels
+
+
+!/imgs
+
  

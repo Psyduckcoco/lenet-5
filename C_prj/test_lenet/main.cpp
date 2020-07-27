@@ -38,7 +38,8 @@ float b_fc7[10] = { 0 };
 void read_parameters();
 
 float pic_in[32][32] = {0};
-//uint8_t pic1[32][32] = { 0 };;
+
+#define test_data_set  //测试数据集宏定义 
 int main()
 {
 	read_parameters();
@@ -52,12 +53,11 @@ int main()
 	{
 		for (int col = 0; col < 32; col++)  //列
 		{
-			//pic1[row][col] =255- (int)(img_in.at<uchar>(row, col)); //归一化到0 ~ 1 
 			pic_in[row][col] = 1- (img_in.at<uchar>(row, col)) / 255.0; //归一化到0 ~ 1 
-			//cout  << setprecision(2) << (pic_in[row][col])<<' ';
 		}
-		//cout << endl;
 	}
+
+
 
 	conv_1_pool2(&pic_in[0][0],&W_CONV1[0][0][0][0],&S2_DRAM[0][0][0], b_conv1 );
 	conv_3_pool4(&S2_DRAM[0][0][0], &W_CONV3[0][0][0][0], &S4_DRAM[0][0][0], b_conv3 );
