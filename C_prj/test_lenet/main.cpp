@@ -22,20 +22,15 @@ float F6_DRAM[84] = { 0 };
 float F7_DRAM[10] = { 0 };
 
 float W_CONV1[6][1][5][5] = { 0 };
-float W_POOL2[6 * 4] = { 0 };
 float W_CONV3[16][6][5][5] = { 0 };
-float W_POOL4[16 * 4] = { 0 };
 float W_CONV5[120][16][5][5] = { 0 };
-
-float WFC6[120 * 84] = { 0 };
-float WFC7[84 * 10] = { 0 };
 
 float b_conv1[6] = { 0 };
 float b_conv3[16] = { 0 };
 float b_conv5[120] = { 0 };
 
-float b_pool2[6] = { 0 };
-float b_pool4[16] = { 0 };
+float WFC6[120 * 84] = { 0 };
+float WFC7[84 * 10] = { 0 };
 
 float b_fc6[84] = { 0 };
 float b_fc7[10] = { 0 };
@@ -43,24 +38,26 @@ float b_fc7[10] = { 0 };
 void read_parameters();
 
 float pic_in[32][32] = {0};
- 
+//uint8_t pic1[32][32] = { 0 };;
 int main()
 {
 	read_parameters();
-	Mat img_ori = imread("..\\..\\dataset\\test6.bmp", 0);//读取原图
+	Mat img_ori = imread("..\\..\\dataset\\test0.bmp", 0);//读取原图
 	Mat img_28;
 	Mat img_in;
 	resize(img_ori, img_28, Size(28, 28));
-	copyMakeBorder(img_28, img_in, 2, 2, 2, 2, BORDER_CONSTANT, 0);
-
-
+	copyMakeBorder(img_28, img_in, 2, 2, 2, 2, BORDER_CONSTANT,255);
 
 	for (int row = 0; row < 32; row++)      //行
+	{
 		for (int col = 0; col < 32; col++)  //列
-			{
-				pic_in[row][col] = (float)(img_in.at<uchar>(row, col)) / 255.0 ; //归一化到0 ~ 1 
-			}
-
+		{
+			//pic1[row][col] =255- (int)(img_in.at<uchar>(row, col)); //归一化到0 ~ 1 
+			pic_in[row][col] = 1- (img_in.at<uchar>(row, col)) / 255.0; //归一化到0 ~ 1 
+			//cout  << setprecision(2) << (pic_in[row][col])<<' ';
+		}
+		//cout << endl;
+	}
 
 	conv_1_pool2(&pic_in[0][0],&W_CONV1[0][0][0][0],&S2_DRAM[0][0][0], b_conv1 );
 	conv_3_pool4(&S2_DRAM[0][0][0], &W_CONV3[0][0][0][0], &S4_DRAM[0][0][0], b_conv3 );
@@ -80,7 +77,7 @@ int main()
 	}
 	imshow("原始图", img_ori);
 	imshow("padding图", img_in);
-	waitKey(1000);
+	waitKey(10);
 	while (1);
 	return 0;
 
