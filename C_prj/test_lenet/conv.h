@@ -3,8 +3,7 @@
 #include "conv.h"
 #include "assert.h"
 #include <stdint.h>
-#include <string.h>
-#include <ap_int.h>
+#include <string.h> 
 
 
 #endif

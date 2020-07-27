@@ -222,7 +222,7 @@ static float W7[10][84] = { 0 };
 static float Bias7[10] = { 0 };
 static float OUT7[10] = { 0 };
 
-void fc_6(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
+void fc_7(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM)
 {
 	memcpy((void*)Bias7, (const void*)(Bias_DRAM), sizeof(float) * 10);
 	memcpy((void*)IN7, (const void*)(In_DRAM), sizeof(float) * 84);
