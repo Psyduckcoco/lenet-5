@@ -1,4 +1,11 @@
+/*
+!/C_prj
+!/dataset
+!/filter
+!/imgs
+
 /C_prj/*
 !/C_prj/test_lenet
 /C_prj/test_lenet/.vs
 /C_prj/test_lenet/x64
+ 
