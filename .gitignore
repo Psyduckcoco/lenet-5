@@ -23,4 +23,10 @@
 
 !/imgs
 
+
+!/HLS_prj
+/HLS_prj/*
+!/HLS_prj/lenet_hls
+/HLS_prj/lenet_hls/s_pipe
+/HLS_prj/lenet_hls/solution1
  
