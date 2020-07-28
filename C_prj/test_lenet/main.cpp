@@ -13,13 +13,9 @@ using namespace std;
 using namespace cv;
 float input[32][32] = {0};
 
-float S2_DRAM[6][14][14] = { 0 };
+float POOL24_DRAM[16][14][14] = { 0 };
 
-float S4_DRAM[16][5][5] = { 0 };
-
-float C5_DRAM[120] = { 0 };
-float F6_DRAM[84] = { 0 };
-float F7_DRAM[10] = { 0 };
+float C567_DRAM[120] = { 0 };
 
 float W_CONV1[6][1][5][5] = { 0 };
 float W_CONV3[16][6][5][5] = { 0 };
@@ -63,19 +59,19 @@ int main()
 				pic_in[row][col] = (img_in.at<uchar>(row, col)) / 255.0; //归一化到0 ~ 1 
 			}
 		}
-		conv_1_pool2(&pic_in[0][0], &W_CONV1[0][0][0][0], &S2_DRAM[0][0][0], b_conv1);
-		conv_3_pool4(&S2_DRAM[0][0][0], &W_CONV3[0][0][0][0], &S4_DRAM[0][0][0], b_conv3);
-		conv_5(&S4_DRAM[0][0][0], &W_CONV5[0][0][0][0], &C5_DRAM[0], b_conv5);
-		fc_6(C5_DRAM, WFC6, F6_DRAM, b_fc6);
-		fc_7(F6_DRAM, WFC7, F7_DRAM, b_fc7);
+		top_fun(&pic_in[0][0], &W_CONV1[0][0][0][0], &POOL24_DRAM[0][0][0], b_conv1,1);
+		top_fun(&POOL24_DRAM[0][0][0], &W_CONV3[0][0][0][0], &POOL24_DRAM[0][0][0], b_conv3,2);
+		top_fun(&POOL24_DRAM[0][0][0], &W_CONV5[0][0][0][0], &C567_DRAM[0], b_conv5,3);
+		top_fun(C567_DRAM, WFC6, C567_DRAM, b_fc6,4);
+		top_fun(C567_DRAM, WFC7, C567_DRAM, b_fc7,5);
 		int max_arg = 0;
 		float max = -100000;
 		for (int i = 0; i < 10; i++)
 		{
-			if (F7_DRAM[i] > max)
+			if (C567_DRAM[i] > max)
 			{
 				max_arg = i;
-				max = F7_DRAM[i];
+				max = C567_DRAM[i];
 			}
 		}
 		result[i] = max_arg;
@@ -88,7 +84,7 @@ int main()
 	cout << "Recognition rate is " << (  1-   float(err_cnt) / 8952.0  )   * 100 << '%' << endl;
 	
 #else
-	Mat img_ori = imread("..\\..\\dataset\\test0.bmp", 0);//读取原图
+	Mat img_ori = imread("..\\..\\dataset\\test5.bmp", 0);//读取原图
 	Mat img_28;
 	Mat img_in;
 	resize(img_ori, img_28, Size(28, 28));
@@ -101,22 +97,23 @@ int main()
 			pic_in[row][col] = 1 - (img_in.at<uchar>(row, col)) / 255.0; //归一化到0 ~ 1 
 		}
 	}
-	conv_1_pool2(&pic_in[0][0], &W_CONV1[0][0][0][0], &S2_DRAM[0][0][0], b_conv1);
-	conv_3_pool4(&S2_DRAM[0][0][0], &W_CONV3[0][0][0][0], &S4_DRAM[0][0][0], b_conv3);
-	conv_5(&S4_DRAM[0][0][0], &W_CONV5[0][0][0][0], &C5_DRAM[0], b_conv5);
-	fc_6(C5_DRAM, WFC6, F6_DRAM, b_fc6);
-	fc_7(F6_DRAM, WFC7, F7_DRAM, b_fc7);
+	top_fun(&pic_in[0][0], &W_CONV1[0][0][0][0], &POOL24_DRAM[0][0][0], b_conv1, 1);
+	top_fun(&POOL24_DRAM[0][0][0], &W_CONV3[0][0][0][0], &POOL24_DRAM[0][0][0], b_conv3, 2);
+	top_fun(&POOL24_DRAM[0][0][0], &W_CONV5[0][0][0][0], &C567_DRAM[0], b_conv5, 3);
+	top_fun(C567_DRAM, WFC6, C567_DRAM, b_fc6, 4);
+	top_fun(C567_DRAM, WFC7, C567_DRAM, b_fc7, 5);
 
 	int max_arg = 0;
 	float max = -100000;
 	for (int i = 0; i < 10; i++)
 	{
-		if (F7_DRAM[i] > max)
+		if (C567_DRAM[i] > max)
 		{
 			max_arg = i;
-			max = F7_DRAM[i];
+			max = C567_DRAM[i];
 		}
 	}
+	cout <<"the number is " <<max_arg<< "  " << max << endl;
 	imshow("原始图", img_ori);
 	imshow("padding图", img_in);
 	waitKey(10);
