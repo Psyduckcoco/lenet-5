@@ -15,8 +15,8 @@ static float IN67[120] = { 0 };
 static float W1[6][5][5] = { 0 };//第一层单独占6个bram
 static float W35[parrell_num_3layer][8][5][5] = { 0 };//3层和5层 8输出并行 8输入并行 占64个bram  128dsp
 
-static float W6[2][8] = { 0 };//第6层全连接 2输出并行 8输入并行 32dsp
-static float W7[1][2] = { 0 };//第7层全连接 10输出并行 2输入并行 40dsp
+static float W6[84][120] = { 0 };//第6层全连接 2输出并行 8输入并行 32dsp
+static float W7[10][84] = { 0 };//第7层全连接 10输出并行 2输入并行 40dsp
 float REG_float(float in)
 {
 #pragma HLS INLINE off
@@ -281,57 +281,38 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 		memcpy((void*)(Out_DRAM), (const void*)OUT567, sizeof(float) * 120);
 	}
 
-
 	else if (layer == 4)
 	{
 		memcpy((void*)Bias, (const void*)(Bias_DRAM), sizeof(float) * 84);
 		memcpy((void*)IN67, (const void*)(In_DRAM), sizeof(float) * 120);
+		memcpy((void*)W6, (const void*)(W_DRAM), sizeof(float) * 120 * 84);
 
-	clear4:
 		for (int outchl = 0; outchl < 120; outchl++)
 		{
 #pragma HLS PIPELINE
 			OUT567[outchl] = 0;
 		}
 
-	chl_o_tiling_4:
-		for (int chl_o = 0; chl_o < 84; chl_o += 2)
-		{
-		chl_i_tiling_4:
-			for (int chl_in = 0; chl_in < 120; chl_in += 8)
-			{
-				for (int copy_t = 0; copy_t < 8; copy_t++)
-					memcpy((void*)(&W6[0][0] + copy_t * 8), (const void*)(W_DRAM + copy_t * 120 + chl_in + chl_o * 120), sizeof(float) * 8);
-
-				for (int cho = 0; cho < 2; cho++)
-				{
-					for (int chi = 0; chi < 8; chi++)
-					{
-#pragma HLS PIPELINE
-						OUT567[cho + chl_o] += IN67[chi + chl_in] * W6[cho][chi];
-					}
-				}
-			}
-		}
-	active4:
 		for (int cho = 0; cho < 84; cho++)
 		{
-#pragma HLS PIPELINE
-			float temp;
-			temp = OUT567[cho] + Bias[cho];
+			for (int chi = 0; chi < 120; chi++)
+			{
+				OUT567[cho] += IN67[chi] * W6[cho][chi];
+			}
+		}
 
-
-			OUT567[cho] = temp > 0 ? temp : 0;
+		for (int cho = 0; cho < 84; cho++)
+		{
+			OUT567[cho] = (OUT567[cho] + Bias[cho]) > 0 ? (OUT567[cho] + Bias[cho]) : 0;
 		}
 
 		memcpy((void*)(Out_DRAM), (const void*)OUT567, sizeof(float) * 84);
 	}
-
-
 	else if (layer == 5)
 	{
 		memcpy((void*)Bias, (const void*)(Bias_DRAM), sizeof(float) * 10);
 		memcpy((void*)IN67, (const void*)(In_DRAM), sizeof(float) * 84);
+		memcpy((void*)W7, (const void*)(W_DRAM), sizeof(float) * 10 * 84);
 
 	clear5:
 		for (int outchl = 0; outchl < 120; outchl++)
@@ -339,23 +320,11 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 #pragma HLS PIPELINE
 			OUT567[outchl] = 0;
 		}
-	chl_o_tiling_5:
-		for (int chl_o = 0; chl_o < 10; chl_o += 1)
+		for (int chi = 0; chi < 84; chi++)
 		{
-		chl_i_tiling_5:
-			for (int chl_in = 0; chl_in < 84; chl_in += 2)
+			for (int cho = 0; cho < 10; cho++)
 			{
-				for (int copy_t = 0; copy_t < 1; copy_t++)
-					memcpy((void*)(&W7[0][0] + copy_t * 2), (const void*)(W_DRAM + copy_t * 84 + chl_in + chl_o * 84), sizeof(float) * 2);
-
-				for (int cho = 0; cho < 1; cho++)
-				{
-#pragma HLS PIPELINE
-					for (int chi = 0; chi < 2; chi++)
-					{
-						OUT567[cho + chl_o] += IN67[chi + chl_in] * W7[cho][chi];
-					}
-				}
+				OUT567[cho] += IN67[chi] * W7[cho][chi];
 			}
 		}
 
