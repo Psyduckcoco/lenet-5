@@ -23,7 +23,14 @@ float REG_float(float in)
 #pragma HLS INTERFACE register port=return
 	return in;
 }
-//void conv1_func
+int32_t REG(int32_t in)
+{
+#pragma HLS INLINE off
+#pragma HLS INTERFACE register port=return
+	int32_t ans;
+	ans = in;
+	return ans;
+}
 void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, int8_t layer)
 {
 	/*************AXI接口定义**************/
@@ -116,11 +123,11 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 #pragma HLS PIPELINE
 				for (int cho = 0; cho < 6; cho++)
 				{
-					float temp1,temp2,temp3;
+					float temp1, temp2, temp3;
 					temp1 = REG_float(OUT13[cho][r * 2 + 0][c * 2 + 0] + OUT13[cho][r * 2 + 0][c * 2 + 1]);
-					temp2 = REG_float(OUT13[cho][r * 2 + 1][c * 2 + 0]+ OUT13[cho][r * 2 + 1][c * 2 + 1]);
-					temp3 = REG_float(  (temp1 + temp2) * 0.25  ) ;
- 
+					temp2 = REG_float(OUT13[cho][r * 2 + 1][c * 2 + 0] + OUT13[cho][r * 2 + 1][c * 2 + 1]);
+					temp3 = REG_float((temp1 + temp2) * 0.25);
+
 					POOL_24[cho][r][c] = temp3;
 
 				}
@@ -180,7 +187,7 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 				}
 			}
 		}
-		
+
 	active_r2:
 		for (int r = 0; r < 10; r++)
 		{
@@ -236,7 +243,14 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 			for (int chl_in = 0; chl_in < 16; chl_in += 8)
 			{
 				for (int copy_t = 0; copy_t < parrell_num_3layer; copy_t++)
-					memcpy((void*)(&W35[0][0][0][0] + copy_t * 8 * 5 * 5), (const void*)(W_DRAM + copy_t * 16 * 5 * 5 + chl_in * 5 * 5 + chl_o * 16 * 5 * 5), sizeof(float) * 8 * 5 * 5);
+				{
+					int address1, address2, address3;
+					address1 = REG(copy_t * 16 * 5 * 5);
+					address2 = REG(chl_in * 5 * 5);
+					address3 = REG(chl_o * 16 * 5 * 5);
+
+					memcpy((void*)(&W35[0][0][0][0] + copy_t * 8 * 5 * 5), (const void*)(W_DRAM + address1 + address2 + address3), sizeof(float) * 8 * 5 * 5);
+				}
 
 			kr3:
 				for (int kr = 0; kr < 5; kr++)
@@ -261,7 +275,7 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 		{
 #pragma HLS PIPELINE
 			float temp;
-			temp = REG_float(OUT567[cho] + Bias[cho]);
+			temp = OUT567[cho] + Bias[cho];
 			OUT567[cho] = temp > 0 ? temp : 0;
 		}
 		memcpy((void*)(Out_DRAM), (const void*)OUT567, sizeof(float) * 120);
@@ -299,20 +313,19 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 				}
 			}
 		}
-
+	active4:
 		for (int cho = 0; cho < 84; cho++)
 		{
 #pragma HLS PIPELINE
 			float temp;
-			temp = REG_float(OUT567[cho] + Bias[cho]);
+			temp = OUT567[cho] + Bias[cho];
 
-			
+
 			OUT567[cho] = temp > 0 ? temp : 0;
 		}
 
 		memcpy((void*)(Out_DRAM), (const void*)OUT567, sizeof(float) * 84);
 	}
-
 
 
 	else if (layer == 5)

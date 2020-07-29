@@ -15,8 +15,9 @@ static float IN67[120] = { 0 };
 static float W1[6][5][5] = { 0 };//第一层单独占6个bram
 static float W35[parrell_num_3layer][8][5][5] = { 0 };//3层和5层 8输出并行 8输入并行 占64个bram  128dsp
 
-static float W6[2][8] = { 0 };//第6层全连接 2输出并行 8输入并行 32dsp
-static float W7[1][2] = { 0 };//第7层全连接 10输出并行 2输入并行 40dsp
+#define w6_parall 15
+static float W6[2][w6_parall] = { 0 };//第6层全连接 2输出并行 8输入并行 32dsp   84/120
+static float W7[1][2] = { 0 };//第7层全连接 10输出并行 2输入并行 40dsp		10/84
 float REG_float(float in)
 {
 #pragma HLS INLINE off
@@ -298,14 +299,14 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 		for (int chl_o = 0; chl_o < 84; chl_o += 2)
 		{
 		chl_i_tiling_4:
-			for (int chl_in = 0; chl_in < 120; chl_in += 8)
+			for (int chl_in = 0; chl_in < 120; chl_in += w6_parall)
 			{
-				for (int copy_t = 0; copy_t < 8; copy_t++)
-					memcpy((void*)(&W6[0][0] + copy_t * 8), (const void*)(W_DRAM + copy_t * 120 + chl_in + chl_o * 120), sizeof(float) * 8);
+				for (int copy_t = 0; copy_t < w6_parall; copy_t++)
+					memcpy((void*)(&W6[0][0] + copy_t * w6_parall), (const void*)(W_DRAM + copy_t * 120 + chl_in + chl_o * 120), sizeof(float) * w6_parall);
 
 				for (int cho = 0; cho < 2; cho++)
 				{
-					for (int chi = 0; chi < 8; chi++)
+					for (int chi = 0; chi < w6_parall; chi++)
 					{
 #pragma HLS PIPELINE
 						OUT567[cho + chl_o] += IN67[chi + chl_in] * W6[cho][chi];

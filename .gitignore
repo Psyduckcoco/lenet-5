@@ -17,6 +17,7 @@
 
 !/dataset
 /dataset/test
+/dataset/test_bin
 /dataset/images
 /dataset/labels
 
