@@ -297,6 +297,7 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 		{
 			for (int chi = 0; chi < 120; chi++)
 			{
+#pragma HLS PIPELINE
 				OUT567[cho] += IN67[chi] * W6[cho][chi];
 			}
 		}
@@ -324,6 +325,7 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 		{
 			for (int cho = 0; cho < 10; cho++)
 			{
+#pragma HLS PIPELINE
 				OUT567[cho] += IN67[chi] * W7[cho][chi];
 			}
 		}
