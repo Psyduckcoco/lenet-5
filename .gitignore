@@ -22,10 +22,20 @@
 
 !/imgs
 
+!/结果信息
 
 !/HLS_prj
 /HLS_prj/*
 !/HLS_prj/lenet_hls
 /HLS_prj/lenet_hls/s_pipe
 /HLS_prj/lenet_hls/solution1
+
+!/vivado_prj
+/vivado_prj/*
+!/vivado_prj/ip/*zip
+
+!/vivado_prj/sdk_files
+
+
+
  
