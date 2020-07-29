@@ -53,8 +53,6 @@
                                     									
                                     <listOptionValue builtIn="false" value="E:/program_files/xilinx/Vivado/2018.3/include/ap_sysc"/>
                                     									
-                                    <listOptionValue builtIn="false" value="E:/lenet/HLS_prj"/>
-                                    									
                                     <listOptionValue builtIn="false" value="E:/program_files/xilinx/Vivado/2018.3/win64/tools/systemc/include"/>
                                     									
                                     <listOptionValue builtIn="false" value="E:/program_files/xilinx/Vivado/2018.3/win64/tools/auto_cc/include"/>
@@ -88,8 +86,6 @@
                                 <option id="gnu.c.compiler.option.include.paths.1917649699" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
                                     									
                                     <listOptionValue builtIn="false" value="E:/program_files/xilinx/Vivado/2018.3/include/ap_sysc"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="E:/lenet/HLS_prj"/>
                                     									
                                     <listOptionValue builtIn="false" value="E:/program_files/xilinx/Vivado/2018.3/win64/tools/systemc/include"/>
                                     									
@@ -225,8 +221,6 @@
                                     									
                                     <listOptionValue builtIn="false" value="E:/program_files/xilinx/Vivado/2018.3/include/ap_sysc"/>
                                     									
-                                    <listOptionValue builtIn="false" value="E:/lenet/HLS_prj"/>
-                                    									
                                     <listOptionValue builtIn="false" value="E:/program_files/xilinx/Vivado/2018.3/win64/tools/systemc/include"/>
                                     									
                                     <listOptionValue builtIn="false" value="E:/program_files/xilinx/Vivado/2018.3/win64/tools/auto_cc/include"/>
@@ -250,8 +244,6 @@
                                 <option id="gnu.c.compiler.option.include.paths.1012450270" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
                                     									
                                     <listOptionValue builtIn="false" value="E:/program_files/xilinx/Vivado/2018.3/include/ap_sysc"/>
-                                    									
-                                    <listOptionValue builtIn="false" value="E:/lenet/HLS_prj"/>
                                     									
                                     <listOptionValue builtIn="false" value="E:/program_files/xilinx/Vivado/2018.3/win64/tools/systemc/include"/>
                                     									

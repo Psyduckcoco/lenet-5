@@ -13,7 +13,7 @@
 /python_code/data
 /python_code/processed
 /python_code/raw
-
+/python_code/parameter/*.txt
 
 !/dataset
 /dataset/test

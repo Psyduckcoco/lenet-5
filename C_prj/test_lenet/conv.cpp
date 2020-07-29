@@ -56,10 +56,10 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 #pragma HLS ARRAY_PARTITION variable=W35 complete dim=2
 
 #pragma HLS ARRAY_PARTITION variable=OUT567 complete dim=0
-#pragma HLS ARRAY_PARTITION variable=IN67 complete dim=0
-
-#pragma HLS ARRAY_PARTITION variable=W6 complete dim=0
-#pragma HLS ARRAY_PARTITION variable=W7 complete dim=0
+//#pragma HLS ARRAY_PARTITION variable=IN67 complete dim=0
+//
+//#pragma HLS ARRAY_PARTITION variable=W6 complete dim=0
+//#pragma HLS ARRAY_PARTITION variable=W7 complete dim=0
 
 
 	if (layer == 1)
@@ -293,17 +293,21 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 			OUT567[outchl] = 0;
 		}
 
+	fc6_cho:
 		for (int cho = 0; cho < 84; cho++)
 		{
+		fc6_chi:
 			for (int chi = 0; chi < 120; chi++)
 			{
-#pragma HLS PIPELINE
+				//#pragma HLS UNROLL factor=10
 				OUT567[cho] += IN67[chi] * W6[cho][chi];
 			}
 		}
 
+	fc6_active:
 		for (int cho = 0; cho < 84; cho++)
 		{
+#pragma HLS PIPELINE
 			OUT567[cho] = (OUT567[cho] + Bias[cho]) > 0 ? (OUT567[cho] + Bias[cho]) : 0;
 		}
 
@@ -321,11 +325,13 @@ void top_fun(float* In_DRAM, float* W_DRAM, float* Out_DRAM, float* Bias_DRAM, i
 #pragma HLS PIPELINE
 			OUT567[outchl] = 0;
 		}
+	fc7_chi:
 		for (int chi = 0; chi < 84; chi++)
 		{
+		fc7_cho:
 			for (int cho = 0; cho < 10; cho++)
 			{
-#pragma HLS PIPELINE
+				//#pragma HLS UNROLL factor=10
 				OUT567[cho] += IN67[chi] * W7[cho][chi];
 			}
 		}
