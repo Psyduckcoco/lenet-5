@@ -2,7 +2,7 @@
 
 !/C_prj
 /C_prj/*
-/C_prj/*.md
+!/C_prj/*.md
 !/C_prj/test_lenet
 /C_prj/test_lenet/.vs
 /C_prj/test_lenet/x64
@@ -31,6 +31,7 @@
 
 !/HLS_prj
 /HLS_prj/*
+!/HLS_prj/*.log
 !/HLS_prj/lenet_hls
 /HLS_prj/lenet_hls/s_pipe
 /HLS_prj/lenet_hls/solution1
