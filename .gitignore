@@ -1,49 +1,49 @@
 /*
 
-!/C_prj
-/C_prj/*
-!/C_prj/*.md
-!/C_prj/test_lenet
-/C_prj/test_lenet/.vs
-/C_prj/test_lenet/x64
+!/Sourcecode/C_prj
+/Sourcecode/C_prj/*
+!/Sourcecode/C_prj/*.md
+!/Sourcecode/C_prj/test_lenet
+/Sourcecode/C_prj/test_lenet/.vs
+/Sourcecode/C_prj/test_lenet/x64
 
 
 
-!/python_code
+!/Sourcecode/python_code
 
-/python_code/.idea
-/python_code/data
-/python_code/processed
-/python_code/raw
+/Sourcecode/python_code/.idea
+/Sourcecode/python_code/data
+/Sourcecode/python_code/processed
+/Sourcecode/python_code/raw
 
-!/dataset
-/dataset/test
-/dataset/test_bin
-/dataset/images
+!/Sourcecode/dataset
+/Sourcecode/dataset/test
+/Sourcecode/dataset/test_bin
+/Sourcecode/dataset/images
 
 
  
 
-!/结果信息
-!/系统框架图.png
+!/Sourcecode/HLS_prj
+/Sourcecode/HLS_prj/*
+!/Sourcecode/HLS_prj/*.log
+!/Sourcecode/HLS_prj/lenet_hls
+/Sourcecode/HLS_prj/lenet_hls/s_pipe
+/Sourcecode/HLS_prj/lenet_hls/solution1
+
+!/Sourcecode/vivado_prj
+/Sourcecode/vivado_prj/*
+!/Sourcecode/vivado_prj/README.md
+!/Sourcecode/vivado_prj/ip/*zip
+!/Sourcecode/vivado_prj/sdk_files
+!/Sourcecode/vivado_prj/lenet/lenet.bit
+!/Sourcecode/vivado_prj/lenet/lenet.hwh
+!/Sourcecode/vivado_prj/lenet/lenet.tcl
+
+!/Sourcecode/jupyter_files
+ 
+
+!/images
 !/*.md
 
-
-!/HLS_prj
-/HLS_prj/*
-!/HLS_prj/*.log
-!/HLS_prj/lenet_hls
-/HLS_prj/lenet_hls/s_pipe
-/HLS_prj/lenet_hls/solution1
-
-!/vivado_prj
-/vivado_prj/*
-!/vivado_prj/README.md
-!/vivado_prj/ip/*zip
-!/vivado_prj/sdk_files
-!/vivado_prj/lenet/lenet.bit
-!/vivado_prj/lenet/lenet.hwh
-!/vivado_prj/lenet/lenet.tcl
-
-!/jupyter_files
- 
+!/ExecutableFiles
