@@ -23,6 +23,7 @@
 !/imgs
 
 !/结果信息
+!/系统框架图.png
 
 !/HLS_prj
 /HLS_prj/*
@@ -32,10 +33,12 @@
 
 !/vivado_prj
 /vivado_prj/*
+!/vivado_prj/README.md
 !/vivado_prj/ip/*zip
-
 !/vivado_prj/sdk_files
-
+!/vivado_prj/lenet/lenet.bit
+!/vivado_prj/lenet/lenet.hwh
+!/vivado_prj/lenet/lenet.tcl
 
 
  

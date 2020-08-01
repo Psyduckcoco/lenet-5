@@ -178,16 +178,16 @@ int main()
     	{
 
     		top_fun(&XTop_fun_inst,(u32)&pic_in[i][0],(u32) &W_CONV1[0][0][0][0],(u32) &POOL24_DRAM[0][0][0], (u32)b_conv1,1);
-    		Xil_DCacheInvalidateRange((u32)POOL24_DRAM, sizeof(POOL24_DRAM));
+    		//Xil_DCacheInvalidateRange((u32)POOL24_DRAM, sizeof(POOL24_DRAM));
 
     		top_fun(&XTop_fun_inst,(u32)&POOL24_DRAM[0][0][0],(u32) &W_CONV3[0][0][0][0],(u32) &POOL24_DRAM[0][0][0], (u32)b_conv3,2);
-    		Xil_DCacheInvalidateRange((u32)POOL24_DRAM, sizeof(POOL24_DRAM));
+    		//Xil_DCacheInvalidateRange((u32)POOL24_DRAM, sizeof(POOL24_DRAM));
 
     		top_fun(&XTop_fun_inst,(u32)&POOL24_DRAM[0][0][0], (u32)&W_CONV5[0][0][0][0], (u32)&C5_DRAM[0],(u32) b_conv5,3);
-    		Xil_DCacheInvalidateRange((u32)C5_DRAM, sizeof(C5_DRAM));
+    		//Xil_DCacheInvalidateRange((u32)C5_DRAM, sizeof(C5_DRAM));
 
     		top_fun(&XTop_fun_inst,(u32)C5_DRAM, (u32)WFC6, (u32)C6_DRAM, (u32)b_fc6,4);
-    		Xil_DCacheInvalidateRange((u32)C6_DRAM, sizeof(C6_DRAM));
+    		//Xil_DCacheInvalidateRange((u32)C6_DRAM, sizeof(C6_DRAM));
 
     		top_fun(&XTop_fun_inst,(u32)C6_DRAM,(u32) WFC7, (u32)C7_DRAM, (u32)b_fc7,5);
     		Xil_DCacheInvalidateRange((u32)C7_DRAM, sizeof(C7_DRAM));
@@ -213,6 +213,7 @@ int main()
     printf("err  =  %d  \r\n",err_cnt);
     float rate =  (1-  err_cnt/ 8952.0) * 100;
     printf("Recognition rate is %f %% \r\n",rate);
+    printf("TIME used is  %f ms \r\n",uesd_time);
     printf("FPS is  %f fps/s \r\n",8952/(uesd_time/1000));
 
     cleanup_platform();
